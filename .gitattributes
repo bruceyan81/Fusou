@@ -1,0 +1,55 @@
+* text=auto eol=crlf
+
+# Project source files
+*.cpp text eol=crlf
+*.h text eol=crlf
+*.hpp text eol=crlf
+*.c text eol=crlf
+*.rc text eol=crlf
+CMakeLists.txt text eol=crlf
+*.cmake text eol=crlf
+
+# Project data and documentation
+*.md text eol=crlf
+*.json text eol=crlf
+*.ps1 text eol=crlf
+*.js text eol=crlf
+*.css text eol=crlf
+*.html text eol=crlf
+*.txt text eol=crlf
+
+# Keep Unix-sensitive files as LF
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+Dockerfile text eol=lf
+*.dockerfile text eol=lf
+Makefile text eol=lf
+*.mk text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.7z binary
+*.tar binary
+*.exe binary
+*.dll binary
+*.lib binary
+*.obj binary
+*.pdb binary
+*.ilk binary
+*.so binary
+*.dylib binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary

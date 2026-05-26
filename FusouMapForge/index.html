@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fusou Map Forge</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+
+<body>
+  <div id="app" class="cm-app">
+    <header class="cm-header">
+      <form id="configBar" class="group">
+        <label>W <input id="inputWidth" type="number" min="1" step="1" value="40" /></label>
+        <label>H <input id="inputHeight" type="number" min="1" step="1" value="25" /></label>
+        <label>Resize
+          <select id="selectResizePolicy">
+            <option value="clear">clear</option>
+            <option value="keepTopLeft">keepTopLeft</option>
+          </select>
+        </label>
+        <button id="btnApplyResize" type="submit">Apply</button>
+        <button id="btnClear" type="button">Clear</button>
+      </form>
+
+      <div class="group">
+        <button id="btnImportJson" type="button">Import JSON</button>
+        <input id="inputImportJsonFile" class="u-hidden" type="file" accept=".json,application/json" />
+      </div>
+
+      <div class="group">
+        <button id="btnExportJson" type="button">Export JSON</button>
+      </div>
+
+      <div class="group cm-statusGroup">
+        <div id="status"></div>
+      </div>
+    </header>
+
+    <main class="cm-main">
+      <section class="cm-workspace">
+        <!-- Ruler frame: corner / top ruler / left ruler / viewport(gridWrap) -->
+        <div id="rulerFrame" class="cm-rulerFrame">
+          <div id="rulerCorner" class="cm-rulerCorner" aria-hidden="true"></div>
+
+          <div id="rulerTop" class="cm-rulerTop" aria-label="X ruler">
+            <div id="rulerTopInner" class="cm-rulerTopInner"></div>
+          </div>
+
+          <div id="rulerLeft" class="cm-rulerLeft" aria-label="Y ruler">
+            <div id="rulerLeftInner" class="cm-rulerLeftInner"></div>
+          </div>
+
+          <!-- KEEP id=gridWrap, id=gridRoot for existing JS -->
+          <div id="gridWrap" class="cm-gridWrap">
+            <div id="gridRoot"></div>
+          </div>
+        </div>
+
+        <div id="debug"></div>
+      </section>
+
+
+      <aside class="cm-side">
+        <div id="toolsPanel" class="panel">
+          <h3>Tools</h3>
+
+          <div class="cm-brushRow">
+            <label style="flex:1; display:flex; gap:8px; align-items:center;">
+              TileId
+              <select id="selectRenderBrush" style="flex:1;"></select>
+            </label>
+          </div>
+
+          <div class="hint">Left click paints. Right click erases.</div>
+
+          <div style="height:10px;"></div>
+
+          <h3 style="margin-top:0;">Palette</h3>
+          <div class="cm-tableWrap">
+            <table id="paletteTable">
+              <thead>
+                <tr>
+                  <th class="cm-col-id">Id</th>
+                  <th class="cm-col-name">Name</th>
+                  <th>Glyph</th>
+                  <th class="cm-col-fg">FG</th>
+                  <th class="cm-col-bg">BG</th>
+                  <th class="cm-col-prev">Preview</th>
+                </tr>
+              </thead>
+
+              <tbody id="paletteTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </aside>
+    </main>
+  </div>
+
+  <!-- Hover coordinate tip (shown when pointer is over a cell) -->
+  <div id="cmCoordTip" class="cm-coordTip" style="display:none" aria-hidden="true"></div>
+
+  <!-- Scripts (only what we still use) -->
+  <script defer src="constants.js"></script>
+  <script defer src="generated/tile-palette.generated.js"></script>
+  <script defer src="schema.js"></script>
+  <script defer src="state.js"></script>
+  <script defer src="io.js"></script>
+  <script defer src="defaults.js"></script>
+  <script defer src="ui/dom.js"></script>
+  <script defer src="ui/status-view.js"></script>
+  <script defer src="ui/ruler-view.js"></script>
+  <script defer src="ui/grid-view.js"></script>
+  <script defer src="ui/palette-view.js"></script>
+  <script defer src="helpers/brush-colors.js"></script>
+  <script defer src="helpers/brush-color-runtime.js"></script>
+  <script defer src="helpers/palette-helpers.js"></script>
+  <script defer src="helpers/palette-bridge.js"></script>
+  <script defer src="helpers/file-naming.js"></script>
+  <script defer src="helpers/import-session.js"></script>
+  <script defer src="helpers/app-boot.js"></script>
+  <script defer src="helpers/app-init.js"></script>
+  <script defer src="helpers/coord-tip.js"></script>
+  <script defer src="helpers/grid-hover.js"></script>
+  <script defer src="helpers/painting-session.js"></script>
+  <script defer src="helpers/app-wiring.js"></script>
+  <script defer src="helpers/app-state-sync.js"></script>
+  <script defer src="features/import-export.js"></script>
+  <script defer src="features/resize.js"></script>
+  <script defer src="features/painting.js"></script>
+  <script defer src="features/palette-editing.js"></script>
+  <script defer src="helpers/app-context.js"></script>
+  <script defer src="app.js"></script>
+</body>
+
+</html>

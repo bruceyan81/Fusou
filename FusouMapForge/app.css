@@ -1,0 +1,397 @@
+/* app.css
+   Layout goals:
+   - Center the whole app shell
+   - Constrain layout (workspace + side panel)
+   - Prevent control areas from overflowing their boxes
+   - Move all styles out of index.html
+*/
+
+:root {
+    --cell-size: 18px;
+
+    --bg: #f5f6f7;
+    --panel-bg: #ffffff;
+    --border: #dcdcdc;
+    --text: #222;
+    --muted: #666;
+    --radius: 10px;
+
+    --gap: 12px;
+    --pad: 12px;
+    --sidebar-w: 360px;
+    --app-max-w: 1240px;
+
+    --ruler-x: 52px;
+    --ruler-y: 30px;
+
+    --ruler-bg: #fafafa;
+
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+}
+
+/* ===== App shell ===== */
+.cm-app {
+    max-width: var(--app-max-w);
+    margin-inline: auto;
+    padding: var(--pad);
+}
+
+/* ===== Header / toolbar ===== */
+.cm-header {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel-bg);
+
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.cm-statusGroup {
+    min-width: 260px;
+    flex: 1;
+}
+
+label {
+    font-size: 12px;
+    color: #333;
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    white-space: nowrap;
+}
+
+input[type="number"],
+select,
+input[type="text"] {
+    font-size: 12px;
+    padding: 3px 6px;
+}
+
+button {
+    font-size: 12px;
+    padding: 4px 10px;
+    cursor: pointer;
+}
+
+.u-hidden {
+    display: none !important;
+}
+
+/* Main layout: workspace first, panels below */
+.cm-main {
+    margin-top: var(--gap);
+    display: grid;
+    gap: var(--gap);
+    align-items: start;
+
+    /* Single column: editor first, options below */
+    grid-template-columns: 1fr;
+}
+
+/* Make workspace centered inside its column if it is narrower */
+.cm-workspace {
+    min-width: 0;
+}
+
+/* Panels become a full-width row below */
+.cm-side {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gap);
+}
+
+/* Workspace and ruler frame */
+.cm-rulerFrame {
+    display: grid;
+    grid-template-columns: var(--ruler-x) 1fr;
+    grid-template-rows: var(--ruler-y) 1fr;
+    gap: 0;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #fff;
+
+    /* Keep the ruler and grid constrained as one frame */
+    max-height: calc(100vh - 200px);
+    overflow: hidden;
+}
+
+.cm-rulerCorner {
+    grid-column: 1;
+    grid-row: 1;
+    background: var(--ruler-bg);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.cm-rulerTop {
+    grid-column: 2;
+    grid-row: 1;
+    background: var(--ruler-bg);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
+}
+
+.cm-rulerLeft {
+    grid-column: 1;
+    grid-row: 2;
+    background: var(--ruler-bg);
+    border-right: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Inner layers are translated by ruler-view.js */
+.cm-rulerTopInner,
+.cm-rulerLeftInner {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+    transform: translate(0, 0);
+    pointer-events: none;
+}
+
+/* Optional: default typography for ruler labels (JS will create ticks/labels) */
+.cm-rulerTop,
+.cm-rulerLeft {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    color: #444;
+}
+
+.cm-workspace {
+    min-width: 0;
+    /* allow overflow areas to work inside grid */
+}
+
+.cm-gridWrap {
+    grid-column: 2;
+    grid-row: 2;
+
+    overflow: auto;
+
+    border: 0;
+    border-radius: 0;
+
+    background: #fff;
+    padding: 0;
+
+    min-height: 200px;
+
+    max-height: none;
+}
+
+
+
+/* grid root only wraps content */
+#gridRoot {
+    display: grid;
+    gap: 0px;
+    align-content: start;
+    justify-content: start;
+    width: max-content;
+}
+
+#gridWrap {
+    display: block;
+}
+
+
+
+.cm-cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    font-size: 14px;
+    line-height: 1;
+    border: 1px solid #ddd;
+}
+
+.cm-cell.is-filled {
+    background: #f5f5f5;
+}
+
+#debug {
+    white-space: pre;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    margin-top: 8px;
+    color: #444;
+    overflow: auto;
+    max-height: 220px;
+    border: 1px solid transparent;
+}
+
+.cm-side {
+    min-width: 0;
+}
+
+.panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px;
+    margin-bottom: 12px;
+    background: var(--panel-bg);
+}
+
+.panel h3 {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+}
+
+#status {
+    border: 1px solid var(--border);
+    padding: 6px 8px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    min-height: 18px;
+    background: #fff;
+}
+
+.cm-brushRow {
+    margin-bottom: 8px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.cm-brushRow select {
+    flex: 1;
+}
+
+.hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+}
+
+/* Palette table: prevent it from forcing layout wider */
+.cm-tableWrap {
+    overflow: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    border-bottom: 1px solid #eee;
+    padding: 6px 4px;
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+th {
+    text-align: left;
+    color: #333;
+}
+
+.cm-col-id {
+    width: 52px;
+}
+
+.cm-col-name {
+    width: 120px;
+}
+
+.cm-col-fg,
+.cm-col-bg {
+    width: 86px;
+}
+
+.cm-col-prev {
+    width: 86px;
+}
+
+.cm-colorSel {
+    width: 82px;
+    font-size: 12px;
+}
+
+.cm-colorSample {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 74px;
+    height: 22px;
+
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+
+    user-select: none;
+}
+
+
+/* Avoid long glyph/name strings breaking layout */
+td,
+th {
+    overflow-wrap: anywhere;
+}
+
+#toolsPanel {
+    grid-column: 1 / -1;
+}
+
+/* Hover coordinate tooltip */
+.cm-coordTip {
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    /* JS will set left/top; keep transform neutral */
+    transform: translate(0, 0);
+
+    z-index: 9999;
+    pointer-events: none;
+    /* must not block painting / hover hit-test */
+
+    padding: 4px 6px;
+    border-radius: 6px;
+
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1;
+    white-space: nowrap;
+
+    background: rgba(20, 20, 20, 0.92);
+    color: #fff;
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
+}

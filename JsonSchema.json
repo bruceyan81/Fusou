@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/hew-tilemap.schema.json",
+  "title": "HEW Asset",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "width", "height", "tiles"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 2
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "tiles": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 32
+      },
+      "minItems": 1
+    },
+    "palette": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["tileId", "fg", "bg"],
+        "properties": {
+          "tileId": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 32
+          },
+          "fg": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 15
+          },
+          "bg": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 15
+          }
+        }
+      }
+    }
+  }
+}
