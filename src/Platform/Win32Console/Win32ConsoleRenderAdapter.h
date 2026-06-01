@@ -9,8 +9,6 @@
 #include "src/Core/Ports/RenderPort.h"
 #include "src/Core/Render/CellBuffer.h"
 
-#include <cstdint>
-
 namespace platform
 {
     namespace win32console
@@ -34,8 +32,6 @@ namespace platform
             core::render::CellBuffer preFrame_{};
 
             bool bHasPrevious_{false};
-
-            std::uint8_t cacheAttr_{};
         };
     } // namespace win32console
 } // namespace platform

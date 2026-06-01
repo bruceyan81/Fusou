@@ -27,13 +27,9 @@ namespace platform
 
         void setCursor(CursorMode cursorMode);
 
-        void moveCursorTo(core::types::Vec2 viewportCell) noexcept;
-
-        void setTextAttr(std::uint8_t attr);
-
         [[nodiscard]] std::uint8_t createTextAttr(core::render::Color fg, core::render::Color bg) noexcept;
 
-        void write(std::u32string_view text);
+        void writeAt(core::types::Vec2 writePos, std::u32string_view text, std::uint8_t attr);
 
         void flushStdout() noexcept;
     } // namespace win32console

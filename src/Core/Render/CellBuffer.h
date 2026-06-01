@@ -26,6 +26,11 @@ namespace core
 
         inline constexpr Glyph kSpace = U'\u3000';
 
+        /**
+         * @brief Win32 console の 16 色を表す
+         * 前景色 4 bit と背景色 4 bit を 8 bit の console 属性値へ
+         * 変換するため std::uint8_t に固定する
+         */
         enum class Color : std::uint8_t
         {
             Black = 0x0,
@@ -90,14 +95,19 @@ namespace core
                 return cells_[toIndex(bufferCell.x_, bufferCell.y_)];
             }
 
-            void drawText(const core::types::Vec2 bufferCell, const std::u32string_view text) noexcept
+            /**
+             * @brief 指定した cell ポジションから右方向へ text を描画する
+             * @param bufferCellPos 描画を開始する logical viewport 内の位置
+             * @param text 1 要素を 1 Glyph として扱う UTF-32 文字列 view
+             */
+            void drawText(const core::types::Vec2 bufferCellPos, const std::u32string_view text) noexcept
             {
-                if ((bufferCell.y_ < 0) || (bufferCell.y_ >= kHeight))
+                if ((bufferCellPos.y_ < 0) || (bufferCellPos.y_ >= kHeight))
                 {
                     return;
                 }
 
-                int curX = bufferCell.x_;
+                int curX = bufferCellPos.x_;
                 for (const Glyph ch : text)
                 {
                     if (curX >= kWidth)
@@ -107,7 +117,7 @@ namespace core
 
                     if (curX >= 0)
                     {
-                        Cell& cell = at(core::types::Vec2{curX, bufferCell.y_});
+                        Cell& cell = at(core::types::Vec2{curX, bufferCellPos.y_});
                         cell.glyph_ = ch;
                     }
                     ++curX;

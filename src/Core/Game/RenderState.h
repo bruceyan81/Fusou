@@ -21,6 +21,10 @@ namespace core
         {
             static constexpr std::size_t kSize = static_cast<std::size_t>(kMaxTileId + 1);
 
+            /**
+             * @note JSON palette の前景色と背景色
+             * render::Color と同じ Win32 console 16 色の範囲になるので、std::uint8_t で保持する
+             */
             std::array<std::uint8_t, kSize> fg_{};
             std::array<std::uint8_t, kSize> bg_{};
 

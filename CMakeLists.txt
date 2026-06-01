@@ -21,6 +21,10 @@ set_property(CACHE FUSOU_STAGE PROPERTY STRINGS Dev Shipping)
 
 add_library(fusou_config INTERFACE)
 
+target_compile_definitions(fusou_config INTERFACE
+    NOMINMAX
+)
+
 if(FUSOU_STAGE STREQUAL "Shipping")
     target_compile_definitions(fusou_config INTERFACE
         FUSOU_DEV=0

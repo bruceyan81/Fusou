@@ -19,8 +19,6 @@ namespace platform
 
             preFrame_.fill(core::render::Cell{});
 
-            cacheAttr_ = 0x0;
-
             bHasPrevious_ = true;
         }
 
@@ -52,13 +50,13 @@ namespace platform
                 int x = 0;
                 while (x < core::render::CellBuffer::kWidth)
                 {
-                    const core::types::Vec2 bufferCell{x, y};
+                    const core::types::Vec2 bufferCellPos{x, y};
 
                     core::render::TextStyle style{};
 
                     {
-                        const auto& nextCell = frame.at(bufferCell);
-                        const auto& preCell = preFrame_.at(bufferCell);
+                        const auto& nextCell = frame.at(bufferCellPos);
+                        const auto& preCell = preFrame_.at(bufferCellPos);
 
                         // セルが完全一致の場合、スキップ
                         if (nextCell == preCell)
@@ -76,10 +74,10 @@ namespace platform
 
                         while (x < core::render::CellBuffer::kWidth)
                         {
-                            const core::types::Vec2 currentBufferCell{x, y};
+                            const core::types::Vec2 bufferCellPos{x, y};
 
-                            const auto& nextCell = frame.at(currentBufferCell);
-                            const auto& preCell = preFrame_.at(currentBufferCell);
+                            const auto& nextCell = frame.at(bufferCellPos);
+                            const auto& preCell = preFrame_.at(bufferCellPos);
 
                             if (nextCell == preCell)
                             {
@@ -96,17 +94,9 @@ namespace platform
                             ++x;
                         }
 
-                        moveCursorTo(core::types::Vec2{startX, y});
-
                         const auto attr = createTextAttr(style.fg_, style.bg_);
 
-                        if (attr != cacheAttr_)
-                        {
-                            setTextAttr(attr);
-                            cacheAttr_ = attr;
-                        }
-
-                        write(std::u32string_view(text));
+                        writeAt(core::types::Vec2{startX, y}, std::u32string_view(text), attr);
                     }
                 }
             }
