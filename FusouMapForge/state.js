@@ -107,7 +107,7 @@
     if (initialAsset !== null && initialAsset !== undefined) {
       const vr0 = global.internalAssetSchema.coerceAndValidate(initialAsset);
       if (!vr0.ok) {
-        throw new Error('Initial asset invalid:\n' + (vr0.errors || []).join('\n'));
+        throw new Error(`Initial asset invalid:\n${(vr0.errors || []).join('\n')}`);
       }
       asset = vr0.value;
     } else {
@@ -126,7 +126,7 @@
     if (initialPalette !== null && initialPalette !== undefined) {
       const pr0 = global.paletteConfigSchema.coerceAndValidate(initialPalette);
       if (!pr0.ok) {
-        throw new Error('Initial palette invalid:\n' + (pr0.errors || []).join('\n'));
+        throw new Error(`Initial palette invalid:\n${(pr0.errors || []).join('\n')}`);
       }
       paletteConfig = pr0.value;
     } else {
@@ -288,14 +288,14 @@
       if (w < limits.minW || w > limits.maxW) {
         emit({
           type: 'loadError',
-          errors: ['width out of range: ' + limits.minW + '-' + limits.maxW]
+          errors: [`width out of range: ${limits.minW}-${limits.maxW}`]
         });
         return false;
       }
       if (h < limits.minH || h > limits.maxH) {
         emit({
           type: 'loadError',
-          errors: ['height out of range: ' + limits.minH + '-' + limits.maxH]
+          errors: [`height out of range: ${limits.minH}-${limits.maxH}`]
         });
         return false;
       }

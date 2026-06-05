@@ -71,10 +71,10 @@
         return;
       }
       if (rulerTopInner) {
-        rulerTopInner.style.transform = 'translateX(' + (-gridWrap.scrollLeft) + 'px)';
+        rulerTopInner.style.transform = `translateX(${-gridWrap.scrollLeft}px)`;
       }
       if (rulerLeftInner) {
-        rulerLeftInner.style.transform = 'translateY(' + (-gridWrap.scrollTop) + 'px)';
+        rulerLeftInner.style.transform = `translateY(${-gridWrap.scrollTop}px)`;
       }
     }
 
@@ -101,10 +101,10 @@
 
       const cell = getCellSizePx();
 
-      rulerTopInner.style.width = (w * cell) + 'px';
+      rulerTopInner.style.width = `${w * cell}px`;
       rulerTopInner.style.height = '100%';
 
-      rulerLeftInner.style.height = (h * cell) + 'px';
+      rulerLeftInner.style.height = `${h * cell}px`;
       rulerLeftInner.style.width = '100%';
 
       clearEl(rulerTopInner);
@@ -114,10 +114,10 @@
         const leftPx = x * cell;
 
         const line = makeTickLine('x');
-        line.style.left = leftPx + 'px';
+        line.style.left = `${leftPx}px`;
 
         const lab = makeTickLabel(x);
-        lab.style.left = (leftPx + 2) + 'px';
+        lab.style.left = `${leftPx + 2}px`;
         lab.style.bottom = '2px';
 
         rulerTopInner.appendChild(line);
@@ -128,10 +128,10 @@
         const topPx = y * cell;
 
         const lineY = makeTickLine('y');
-        lineY.style.top = topPx + 'px';
+        lineY.style.top = `${topPx}px`;
 
         const labY = makeTickLabel(y);
-        labY.style.top = (topPx + 2) + 'px';
+        labY.style.top = `${topPx + 2}px`;
         labY.style.right = '4px';
         labY.style.textAlign = 'right';
 

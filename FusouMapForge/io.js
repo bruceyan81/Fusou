@@ -56,7 +56,7 @@
     const base = opt.mapName ? String(opt.mapName) : 'map';
     const w = (asset && asset.width) | 0;
     const h = (asset && asset.height) | 0;
-    return sanitizeFileName(base + '_' + w + 'x' + h + '.json');
+    return sanitizeFileName(`${base}_${w}x${h}.json`);
   }
 
   function stripBomLocal(text) {
@@ -115,8 +115,7 @@
     const vr1 = global.internalAssetSchema.coerceAndValidate(asset);
     if (!vr1.ok) {
       throw new Error(
-        'export asset failed (map invalid):\n' +
-        (vr1.errors || []).join('\n')
+        `export asset failed (map invalid):\n${(vr1.errors || []).join('\n')}`
       );
     }
 
@@ -124,8 +123,7 @@
     const vr2 = global.assetSchemaV2.coerceAndValidate(v2obj);
     if (!vr2.ok) {
       throw new Error(
-        'export asset failed (JSON asset invalid):\n' +
-        (vr2.errors || []).join('\n')
+        `export asset failed (JSON asset invalid):\n${(vr2.errors || []).join('\n')}`
       );
     }
 
@@ -152,7 +150,7 @@
       obj = JSON.parse(stripBomLocal(raw));
     } catch (e) {
       const msg = (e && e.message) ? e.message : String(e);
-      return { ok: false, errors: ['Invalid JSON: ' + msg] };
+      return { ok: false, errors: [`Invalid JSON: ${msg}`] };
     }
 
     const ver = global.detectAssetVersion(obj);
@@ -189,7 +187,7 @@
   function suggestPaletteFileName(options) {
     const opt = options || {};
     const base = opt.name ? String(opt.name) : 'palette';
-    return sanitizeFileName(base + '.json');
+    return sanitizeFileName(`${base}.json`);
   }
 
   function exportPaletteConfigAsJson(paletteConfig, options) {
@@ -199,7 +197,7 @@
 
     const vr = global.paletteConfigSchema.coerceAndValidate(paletteConfig);
     if (!vr.ok) {
-      throw new Error('export palette failed:\n' + (vr.errors || []).join('\n'));
+      throw new Error(`export palette failed:\n${(vr.errors || []).join('\n')}`);
     }
 
     const opt = options || {};

@@ -30,7 +30,7 @@
 
         const opt = document.createElement('option');
         opt.value = String(id);
-        opt.textContent = '[' + id + '] ' + (name || ('Tile' + id)) + ' : ' + (glyph || '');
+        opt.textContent = `[${id}] ${name || `Tile${id}`} : ${glyph || ''}`;
         selectRenderBrush.appendChild(opt);
       }
 
@@ -62,9 +62,9 @@
 
       for (let i = 0; i < 16; i++) {
         const opt = document.createElement('option');
-        const nm = names[i] || ('Color' + i);
+        const nm = names[i] || `Color${i}`;
         opt.value = String(i);
-        opt.textContent = (i < 10 ? ' ' + i : String(i)) + ' ' + nm;
+        opt.textContent = `${i < 10 ? ` ${i}` : String(i)} ${nm}`;
         s.appendChild(opt);
       }
 

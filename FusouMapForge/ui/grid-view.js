@@ -46,7 +46,7 @@
       if (!gridRoot) {
         return;
       }
-      gridRoot.style.gridTemplateColumns = 'repeat(' + w + ', var(--cell-size, 18px))';
+      gridRoot.style.gridTemplateColumns = `repeat(${w}, var(--cell-size, 18px))`;
     }
 
     function buildGridDom(w, h) {

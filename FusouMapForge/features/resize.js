@@ -90,14 +90,14 @@
       if (width < minW || width > maxW) {
         return {
           ok: false,
-          message: 'Resize failed: width must be ' + minW + '-' + maxW + '.'
+          message: `Resize failed: width must be ${minW}-${maxW}.`
         };
       }
 
       if (height < minH || height > maxH) {
         return {
           ok: false,
-          message: 'Resize failed: height must be ' + minH + '-' + maxH + '.'
+          message: `Resize failed: height must be ${minH}-${maxH}.`
         };
       }
 
@@ -138,7 +138,7 @@
 
       syncInputsFromState();
       setStatus(
-        'Resized to ' + (req.width | 0) + '×' + (req.height | 0) + '.',
+        `Resized to ${req.width | 0}×${req.height | 0}.`,
         'ok'
       );
       return true;

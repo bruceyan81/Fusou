@@ -44,7 +44,7 @@
       if (!coordTipEl) {
         return;
       }
-      coordTipEl.textContent = '{ ' + (x | 0) + ', ' + (y | 0) + ' }';
+      coordTipEl.textContent = `{ ${x | 0}, ${y | 0} }`;
     }
 
     function indexToXY(idx, width) {
@@ -100,8 +100,8 @@
       x = clamp(x, 2, maxX);
       y = clamp(y, 2, maxY);
 
-      coordTipEl.style.left = x + 'px';
-      coordTipEl.style.top = y + 'px';
+      coordTipEl.style.left = `${x}px`;
+      coordTipEl.style.top = `${y}px`;
     }
 
     function requestUpdate() {

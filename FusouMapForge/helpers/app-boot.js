@@ -4,7 +4,7 @@
 
   function requireGlobal(obj, key, message) {
     if (!obj || !obj[key]) {
-      throw new Error(message || ('Missing global: ' + key));
+      throw new Error(message || `Missing global: ${key}`);
     }
     return obj[key];
   }
@@ -12,16 +12,17 @@
   function requireFn(obj, key, message) {
     const fn = requireGlobal(obj, key, message);
     if (typeof fn !== 'function') {
-      throw new Error(message || ('Global is not a function: ' + key));
+      throw new Error(message || `Global is not a function: ${key}`);
     }
     return fn;
   }
 
   function assertBootGlobals(win) {
     const missingViews = 'Required view globals missing: status/ruler/grid/palette view';
-    const missingHelpers =
-      'Required helper globals missing: importSession/brushColors/brushColorRuntime/' +
-      'palette/paletteBridge/fileNaming helpers';
+    const missingHelpers = [
+      'Required helper globals missing: importSession/brushColors/brushColorRuntime/',
+      'palette/paletteBridge/fileNaming helpers'
+    ].join('');
     const missingCore =
       'Required core globals missing: AssetState / InternalAssetSchema / PaletteConfigSchema';
     const missingFeatures =
@@ -152,14 +153,14 @@
   function applyNumberInputLimits(inputWidth, inputHeight, limits) {
     if (inputWidth) {
       inputWidth.type = 'number';
-      inputWidth.min = '' + limits.MIN_W;
-      inputWidth.max = '' + limits.MAX_W;
+      inputWidth.min = String(limits.MIN_W);
+      inputWidth.max = String(limits.MAX_W);
     }
 
     if (inputHeight) {
       inputHeight.type = 'number';
-      inputHeight.min = '' + limits.MIN_H;
-      inputHeight.max = '' + limits.MAX_H;
+      inputHeight.min = String(limits.MIN_H);
+      inputHeight.max = String(limits.MAX_H);
     }
   }
 

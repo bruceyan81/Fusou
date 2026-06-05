@@ -64,22 +64,22 @@
     const errors = [];
 
     if (!isPlainObject(input)) {
-      return { ok: false, errors: ['Asset JSON 顶层必须是 object'] };
+      return { ok: false, errors: ['Asset JSON root must be an object'] };
     }
 
     const vr = toIntStrict(input.version);
     if (!vr.ok) {
-      errors.push('version 必须存在且能读成 int');
+      errors.push('version must exist and be readable as an int');
     }
 
     const wr = toIntStrict(input.width);
     if (!wr.ok || wr.value <= 0) {
-      errors.push('width 必须为 int 且 > 0');
+      errors.push('width must be an int and > 0');
     }
 
     const hr = toIntStrict(input.height);
     if (!hr.ok || hr.value <= 0) {
-      errors.push('height 必须为 int 且 > 0');
+      errors.push('height must be an int and > 0');
     }
 
     const limitsSource = (global.appConstAsset && global.appConstAsset.LIMITS) || null;
@@ -100,10 +100,10 @@
         : (maxW * maxH);
 
       if (width < minW || width > maxW) {
-        errors.push('width out of range: ' + minW + '-' + maxW);
+        errors.push(`width out of range: ${minW}-${maxW}`);
       }
       if (height < minH || height > maxH) {
-        errors.push('height out of range: ' + minH + '-' + maxH);
+        errors.push(`height out of range: ${minH}-${maxH}`);
       }
       if ((width * height) > maxCells) {
         errors.push('map too large: cells limit exceeded');
@@ -115,7 +115,7 @@
 
     const tiles = input.tiles;
     if (!Array.isArray(tiles)) {
-      errors.push('tiles 必须为 array');
+      errors.push('tiles must be an array');
     }
 
     if (errors.length) {
@@ -128,8 +128,7 @@
       return {
         ok: false,
         errors: [
-          'tiles.size() 必须 == width * height（期望 ' + expected + '，实际 ' +
-          tiles.length + '）'
+          `tiles.size() must equal width * height (expected ${expected}, actual ${tiles.length})`
         ],
       };
     }
@@ -138,10 +137,10 @@
     for (let i = 0; i < expected; i++) {
       const ir = toIntStrict(tiles[i]);
       if (!ir.ok) {
-        return { ok: false, errors: ['tiles[' + i + '] 必须能读成 int'] };
+        return { ok: false, errors: [`tiles[${i}] must be readable as an int`] };
       }
       if (ir.value < 0) {
-        return { ok: false, errors: ['tiles[' + i + '] 必须 >= 0（实际 ' + ir.value + '）'] };
+        return { ok: false, errors: [`tiles[${i}] must be >= 0 (actual ${ir.value})`] };
       }
       outTiles[i] = ir.value;
     }
@@ -158,14 +157,14 @@
 
   function parseJsonAndValidateInternalAsset(text) {
     if (typeof text !== 'string') {
-      return { ok: false, errors: ['JSON text 必须是字符串'] };
+      return { ok: false, errors: ['JSON text must be a string'] };
     }
     try {
       const obj = JSON.parse(stripBom(text));
       return validateInternalAsset(obj);
     } catch (e) {
       const msg = (e && e.message) ? e.message : String(e);
-      return { ok: false, errors: ['Invalid JSON: ' + msg] };
+      return { ok: false, errors: [`Invalid JSON: ${msg}`] };
     }
   }
 
@@ -185,17 +184,17 @@
     const errors = [];
 
     if (!isPlainObject(input)) {
-      return { ok: false, errors: ['PaletteConfig 顶层必须是 object'] };
+      return { ok: false, errors: ['PaletteConfig root must be an object'] };
     }
 
     const vr = toIntStrict(input.version);
     if (!vr.ok) {
-      errors.push('version 必须存在且能读成 int');
+      errors.push('version must exist and be readable as an int');
     }
 
     const entries = input.entries;
     if (!Array.isArray(entries)) {
-      errors.push('entries 必须为 array');
+      errors.push('entries must be an array');
     }
 
     if (errors.length) {
@@ -208,16 +207,16 @@
     for (let i = 0; i < entries.length; i++) {
       const e = entries[i];
       if (!isPlainObject(e)) {
-        return { ok: false, errors: ['entries[' + i + '] 必须是 object'] };
+        return { ok: false, errors: [`entries[${i}] must be an object`] };
       }
 
       const idr = toIntStrict(e.id);
       if (!idr.ok || idr.value < 0) {
-        return { ok: false, errors: ['entries[' + i + '].id 必须为 int 且 >= 0'] };
+        return { ok: false, errors: [`entries[${i}].id must be an int and >= 0`] };
       }
 
       if (seen.has(idr.value)) {
-        return { ok: false, errors: ['entries 存在重复 id=' + idr.value] };
+        return { ok: false, errors: [`entries contains duplicate id=${idr.value}`] };
       }
       seen.add(idr.value);
 
@@ -238,14 +237,14 @@
 
   function parseJsonAndValidatePaletteConfig(text) {
     if (typeof text !== 'string') {
-      return { ok: false, errors: ['JSON text 必须是字符串'] };
+      return { ok: false, errors: ['JSON text must be a string'] };
     }
     try {
       const obj = JSON.parse(stripBom(text));
       return validatePaletteConfig(obj);
     } catch (e) {
       const msg = (e && e.message) ? e.message : String(e);
-      return { ok: false, errors: ['Invalid JSON: ' + msg] };
+      return { ok: false, errors: [`Invalid JSON: ${msg}`] };
     }
   }
 
@@ -270,22 +269,22 @@
     const errors = [];
 
     if (!isPlainObject(input)) {
-      return { ok: false, errors: ['Asset JSON 顶层必须是 object'] };
+      return { ok: false, errors: ['Asset JSON root must be an object'] };
     }
 
     const vr = toIntStrict(input.version);
     if (!vr.ok || vr.value !== ASSET_SCHEMA_VERSION) {
-      errors.push('version 必须为 int 且 == 2');
+      errors.push('version must be an int and == 2');
     }
 
     const wr = toIntStrict(input.width);
     if (!wr.ok || wr.value <= 0) {
-      errors.push('width 必须为 int 且 > 0');
+      errors.push('width must be an int and > 0');
     }
 
     const hr = toIntStrict(input.height);
     if (!hr.ok || hr.value <= 0) {
-      errors.push('height 必须为 int 且 > 0');
+      errors.push('height must be an int and > 0');
     }
 
     const limitsSource = (global.appConstAsset && global.appConstAsset.LIMITS) || null;
@@ -306,10 +305,10 @@
         : (maxW * maxH);
 
       if (width < minW || width > maxW) {
-        errors.push('width out of range: ' + minW + '-' + maxW);
+        errors.push(`width out of range: ${minW}-${maxW}`);
       }
       if (height < minH || height > maxH) {
-        errors.push('height out of range: ' + minH + '-' + maxH);
+        errors.push(`height out of range: ${minH}-${maxH}`);
       }
       if ((width * height) > maxCells) {
         errors.push('map too large: cells limit exceeded');
@@ -323,7 +322,7 @@
     // tiles
     const tiles = input.tiles;
     if (!Array.isArray(tiles)) {
-      errors.push('tiles 必须为 array');
+      errors.push('tiles must be an array');
     }
     if (errors.length) {
       return { ok: false, errors };
@@ -334,8 +333,7 @@
       return {
         ok: false,
         errors: [
-          'tiles.size() 必须 == width * height（期望 ' + expected + '，实际 ' +
-          tiles.length + '）'
+          `tiles.size() must equal width * height (expected ${expected}, actual ${tiles.length})`
         ],
       };
     }
@@ -344,12 +342,12 @@
     for (let i = 0; i < expected; i++) {
       const ir = toIntStrict(tiles[i]);
       if (!ir.ok) {
-        return { ok: false, errors: ['tiles[' + i + '] 必须能读成 int'] };
+        return { ok: false, errors: [`tiles[${i}] must be readable as an int`] };
       }
       if (ir.value < 0 || ir.value > getMaxTileId()) {
         return {
           ok: false,
-          errors: ['tiles[' + i + '] 必须在 0..' + getMaxTileId() + '（实际 ' + ir.value + '）']
+          errors: [`tiles[${i}] must be in 0..${getMaxTileId()} (actual ${ir.value})`]
         };
       }
       outTiles[i] = ir.value;
@@ -358,7 +356,7 @@
     // palette
     const palette = (input.palette === null || input.palette === undefined) ? [] : input.palette;
     if (!Array.isArray(palette)) {
-      errors.push('palette 必须为 array');
+      errors.push('palette must be an array');
     }
     if (errors.length) {
       return { ok: false, errors };
@@ -370,29 +368,29 @@
     for (let p = 0; p < palette.length; p++) {
       const e = palette[p];
       if (!isPlainObject(e)) {
-        return { ok: false, errors: ['palette[' + p + '] 必须是 object'] };
+        return { ok: false, errors: [`palette[${p}] must be an object`] };
       }
 
       const tid = toIntStrict(e.tileId);
       if (!tid.ok || tid.value < 0 || tid.value > getMaxTileId()) {
         return {
           ok: false,
-          errors: ['palette[' + p + '].tileId 必须为 int 且在 0..' + getMaxTileId()]
+          errors: [`palette[${p}].tileId must be an int and in 0..${getMaxTileId()}`]
         };
       }
 
       const fg = toIntStrict(e.fg);
       if (!fg.ok || fg.value < 0 || fg.value > 15) {
-        return { ok: false, errors: ['palette[' + p + '].fg 必须为 int 且在 0..15'] };
+        return { ok: false, errors: [`palette[${p}].fg must be an int and in 0..15`] };
       }
 
       const bg = toIntStrict(e.bg);
       if (!bg.ok || bg.value < 0 || bg.value > 15) {
-        return { ok: false, errors: ['palette[' + p + '].bg 必须为 int 且在 0..15'] };
+        return { ok: false, errors: [`palette[${p}].bg must be an int and in 0..15`] };
       }
 
       if (seenTileId.has(tid.value)) {
-        return { ok: false, errors: ['palette 存在重复 tileId=' + tid.value] };
+        return { ok: false, errors: [`palette contains duplicate tileId=${tid.value}`] };
       }
       seenTileId.add(tid.value);
 
@@ -413,14 +411,14 @@
 
   function parseJsonAndValidateAssetV2(text) {
     if (typeof text !== 'string') {
-      return { ok: false, errors: ['JSON text 必须是字符串'] };
+      return { ok: false, errors: ['JSON text must be a string'] };
     }
     try {
       const obj = JSON.parse(stripBom(text));
       return validateAssetV2(obj);
     } catch (e) {
       const msg = (e && e.message) ? e.message : String(e);
-      return { ok: false, errors: ['Invalid JSON: ' + msg] };
+      return { ok: false, errors: [`Invalid JSON: ${msg}`] };
     }
   }
 
