@@ -600,5 +600,4 @@
     subscribe,
     init
   };
-  window.AppHelpersAppContext = window.appHelpersAppContext;
 })();

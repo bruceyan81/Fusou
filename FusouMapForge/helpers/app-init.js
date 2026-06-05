@@ -65,5 +65,4 @@
     shouldSeedDefaultPalette,
     initApp
   };
-  window.AppHelpersAppInit = window.appHelpersAppInit;
 })();

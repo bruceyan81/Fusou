@@ -97,5 +97,4 @@
   window.appHelpersPaintingSession = {
     create
   };
-  window.AppHelpersPaintingSession = window.appHelpersPaintingSession;
 })();

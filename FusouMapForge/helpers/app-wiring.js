@@ -54,5 +54,4 @@
   window.appHelpersAppWiring = {
     wireApp
   };
-  window.AppHelpersAppWiring = window.appHelpersAppWiring;
 })();

@@ -54,5 +54,4 @@
   window.appUiStatusView = {
     create
   };
-  window.AppUIStatusView = window.appUiStatusView;
 })();

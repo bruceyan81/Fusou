@@ -34,7 +34,6 @@
     UI,
     DEFAULTS,
   };
-  global.AppConstAsset = global.appConstAsset;
 
 
 })(window);

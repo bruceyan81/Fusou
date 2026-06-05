@@ -190,5 +190,4 @@
   window.appFeatureResize = {
     create
   };
-  window.AppFeatureResize = window.appFeatureResize;
 })();

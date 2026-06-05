@@ -178,5 +178,4 @@
     applyNumberInputLimits,
     assertCoreRefs
   };
-  window.AppHelpersAppBoot = window.appHelpersAppBoot;
 })();

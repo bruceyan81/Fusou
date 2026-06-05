@@ -44,5 +44,4 @@
   window.appUiDom = {
     getRefs
   };
-  window.AppUIDom = window.appUiDom;
 })();

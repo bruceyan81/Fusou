@@ -46,5 +46,4 @@
   window.appHelpersBrushColorRuntime = {
     create
   };
-  window.AppHelpersBrushColorRuntime = window.appHelpersBrushColorRuntime;
 })();

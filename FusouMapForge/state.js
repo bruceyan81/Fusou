@@ -392,6 +392,5 @@
   }
 
   global.assetState = { createState: createAssetState };
-  global.AssetState = global.assetState;
 
 })(window);

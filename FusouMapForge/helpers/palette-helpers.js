@@ -41,5 +41,4 @@
   window.appHelpersPalette = {
     create
   };
-  window.AppHelpersPalette = window.appHelpersPalette;
 })();

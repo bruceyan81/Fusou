@@ -182,5 +182,4 @@
   window.appFeatureImportExport = {
     create
   };
-  window.AppFeatureImportExport = window.appFeatureImportExport;
 })();

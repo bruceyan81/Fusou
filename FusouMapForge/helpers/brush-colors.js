@@ -160,5 +160,4 @@
   window.appHelpersBrushColors = {
     create
   };
-  window.AppHelpersBrushColors = window.appHelpersBrushColors;
 })();

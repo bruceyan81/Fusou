@@ -286,5 +286,4 @@
   window.appFeaturePainting = {
     create
   };
-  window.AppFeaturePainting = window.appFeaturePainting;
 })();

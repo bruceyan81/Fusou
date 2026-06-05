@@ -133,5 +133,4 @@
   window.appHelpersAppStateSync = {
     create
   };
-  window.AppHelpersAppStateSync = window.appHelpersAppStateSync;
 })();

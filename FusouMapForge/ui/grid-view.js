@@ -159,5 +159,4 @@
   window.appUiGridView = {
     create
   };
-  window.AppUIGridView = window.appUiGridView;
 })();

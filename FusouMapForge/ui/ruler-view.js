@@ -165,5 +165,4 @@
   window.appUiRulerView = {
     create
   };
-  window.AppUIRulerView = window.appUiRulerView;
 })();

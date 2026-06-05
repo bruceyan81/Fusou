@@ -175,7 +175,6 @@
     coerceAndValidate: validateInternalAsset,
     parseJsonAndValidate: parseJsonAndValidateInternalAsset,
   };
-  global.InternalAssetSchema = global.internalAssetSchema;
 
   // MapForge-only palette configuration:
   //   { version:int, entries:[ {id:int>=0, glyph:string, name?:string} ] }
@@ -256,7 +255,6 @@
     coerceAndValidate: validatePaletteConfig,
     parseJsonAndValidate: parseJsonAndValidatePaletteConfig,
   };
-  global.PaletteConfigSchema = global.paletteConfigSchema;
 
   // Asset format exported for the Fusou runtime:
   //   top-level object
@@ -447,7 +445,6 @@
     coerceAndValidate: validateAssetV2,
     parseJsonAndValidate: parseJsonAndValidateAssetV2,
   };
-  global.AssetSchemaV2 = global.assetSchemaV2;
   global.detectAssetVersion = detectAssetVersion;
 
 })(window);

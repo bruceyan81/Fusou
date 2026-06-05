@@ -24,5 +24,4 @@
   window.appHelpersFileNaming = {
     getExportFileName
   };
-  window.AppHelpersFileNaming = window.appHelpersFileNaming;
 })();

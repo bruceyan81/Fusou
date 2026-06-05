@@ -5,5 +5,4 @@
   'use strict';
 
   global.appDefaults = global.appDefaults || {};
-  global.AppDefaults = global.appDefaults;
 })(window);

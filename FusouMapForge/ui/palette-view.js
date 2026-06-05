@@ -207,5 +207,4 @@
   window.appUiPaletteView = {
     create
   };
-  window.AppUIPaletteView = window.appUiPaletteView;
 })();

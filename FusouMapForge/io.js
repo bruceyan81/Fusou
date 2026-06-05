@@ -224,13 +224,11 @@
     parseAssetJsonText,
     readTextFromFile,
   };
-  global.IOAsset = global.ioAsset;
 
   global.ioPalette = {
     exportPaletteConfigAsJson,
     parsePaletteJsonText,
     readTextFromFile,
   };
-  global.IOPalette = global.ioPalette;
 
 })(window);

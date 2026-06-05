@@ -87,5 +87,4 @@
   window.appHelpersGridHover = {
     create
   };
-  window.AppHelpersGridHover = window.appHelpersGridHover;
 })();

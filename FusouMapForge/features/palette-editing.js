@@ -216,5 +216,4 @@
   window.appFeaturePaletteEditing = {
     create
   };
-  window.AppFeaturePaletteEditing = window.appFeaturePaletteEditing;
 })();

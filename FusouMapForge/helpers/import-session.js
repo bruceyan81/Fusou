@@ -51,5 +51,4 @@
   window.appHelpersImportSession = {
     create
   };
-  window.AppHelpersImportSession = window.appHelpersImportSession;
 })();

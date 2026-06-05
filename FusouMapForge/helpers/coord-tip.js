@@ -122,5 +122,4 @@
   window.appHelpersCoordTip = {
     create
   };
-  window.AppHelpersCoordTip = window.appHelpersCoordTip;
 })();

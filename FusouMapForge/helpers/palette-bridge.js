@@ -60,5 +60,4 @@
   window.appHelpersPaletteBridge = {
     create
   };
-  window.AppHelpersPaletteBridge = window.appHelpersPaletteBridge;
 })();
