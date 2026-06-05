@@ -55,15 +55,15 @@
     }
 
     function makeTickLabel(text) {
-      const lab = document.createElement('div');
-      lab.textContent = String(text);
-      lab.style.position = 'absolute';
-      lab.style.pointerEvents = 'none';
-      lab.style.whiteSpace = 'nowrap';
-      lab.style.fontSize = '11px';
-      lab.style.lineHeight = '1';
-      lab.style.color = '#444';
-      return lab;
+      const label = document.createElement('div');
+      label.textContent = String(text);
+      label.style.position = 'absolute';
+      label.style.pointerEvents = 'none';
+      label.style.whiteSpace = 'nowrap';
+      label.style.fontSize = '11px';
+      label.style.lineHeight = '1';
+      label.style.color = '#444';
+      return label;
     }
 
     function syncNow() {
@@ -113,30 +113,30 @@
       for (let x = 0; x < w; x += RULER_STEP) {
         const leftPx = x * cell;
 
-        const line = makeTickLine('x');
-        line.style.left = `${leftPx}px`;
+        const horizontalLine = makeTickLine('x');
+        horizontalLine.style.left = `${leftPx}px`;
 
-        const lab = makeTickLabel(x);
-        lab.style.left = `${leftPx + 2}px`;
-        lab.style.bottom = '2px';
+        const horizontalLabel = makeTickLabel(x);
+        horizontalLabel.style.left = `${leftPx + 2}px`;
+        horizontalLabel.style.bottom = '2px';
 
-        rulerTopInner.appendChild(line);
-        rulerTopInner.appendChild(lab);
+        rulerTopInner.appendChild(horizontalLine);
+        rulerTopInner.appendChild(horizontalLabel);
       }
 
       for (let y = 0; y < h; y += RULER_STEP) {
         const topPx = y * cell;
 
-        const lineY = makeTickLine('y');
-        lineY.style.top = `${topPx}px`;
+        const verticalLine = makeTickLine('y');
+        verticalLine.style.top = `${topPx}px`;
 
-        const labY = makeTickLabel(y);
-        labY.style.top = `${topPx + 2}px`;
-        labY.style.right = '4px';
-        labY.style.textAlign = 'right';
+        const verticalLabel = makeTickLabel(y);
+        verticalLabel.style.top = `${topPx + 2}px`;
+        verticalLabel.style.right = '4px';
+        verticalLabel.style.textAlign = 'right';
 
-        rulerLeftInner.appendChild(lineY);
-        rulerLeftInner.appendChild(labY);
+        rulerLeftInner.appendChild(verticalLine);
+        rulerLeftInner.appendChild(verticalLabel);
       }
 
       syncNow();

@@ -52,11 +52,11 @@
   }
 
   function suggestAssetFileName(asset, options) {
-    const opt = options || {};
-    const base = opt.mapName ? String(opt.mapName) : 'map';
-    const w = (asset && asset.width) | 0;
-    const h = (asset && asset.height) | 0;
-    return sanitizeFileName(`${base}_${w}x${h}.json`);
+    const fileOptions = options || {};
+    const base = fileOptions.mapName ? String(fileOptions.mapName) : 'map';
+    const width = (asset && asset.width) | 0;
+    const height = (asset && asset.height) | 0;
+    return sanitizeFileName(`${base}_${width}x${height}.json`);
   }
 
   function stripBomLocal(text) {
@@ -75,16 +75,16 @@
     if (!Array.isArray(palette)) {
       return [];
     }
-    const out = [];
+    const normalizedPalette = [];
     for (let i = 0; i < palette.length; i++) {
-      const e = palette[i] || {};
-      out.push({
-        tileId: Number(e.tileId),
-        fg: Number(e.fg),
-        bg: Number(e.bg),
+      const entry = palette[i] || {};
+      normalizedPalette.push({
+        tileId: Number(entry.tileId),
+        fg: Number(entry.fg),
+        bg: Number(entry.bg),
       });
     }
-    return out;
+    return normalizedPalette;
   }
 
   function buildAssetV2(assetMap, paletteArray) {
@@ -98,9 +98,9 @@
   }
 
   function exportAssetAsJson(asset, options) {
-    const opt = options || {};
+    const exportOptions = options || {};
 
-    if (opt.palette === null || opt.palette === undefined) {
+    if (exportOptions.palette === null || exportOptions.palette === undefined) {
       throw new Error('export asset failed: palette is required for JSON asset export');
     }
 
@@ -112,27 +112,29 @@
     if (!global.internalAssetSchema) {
       throw new Error('internalAssetSchema not loaded');
     }
-    const vr1 = global.internalAssetSchema.coerceAndValidate(asset);
-    if (!vr1.ok) {
+    const internalValidation = global.internalAssetSchema.coerceAndValidate(asset);
+    if (!internalValidation.ok) {
       throw new Error(
-        `export asset failed (map invalid):\n${(vr1.errors || []).join('\n')}`
+        `export asset failed (map invalid):\n${(internalValidation.errors || []).join('\n')}`
       );
     }
 
-    const v2obj = buildAssetV2(vr1.value, opt.palette);
-    const vr2 = global.assetSchemaV2.coerceAndValidate(v2obj);
-    if (!vr2.ok) {
+    const assetV2 = buildAssetV2(internalValidation.value, exportOptions.palette);
+    const assetV2Validation = global.assetSchemaV2.coerceAndValidate(assetV2);
+    if (!assetV2Validation.ok) {
       throw new Error(
-        `export asset failed (JSON asset invalid):\n${(vr2.errors || []).join('\n')}`
+        `export asset failed (JSON asset invalid):\n${(assetV2Validation.errors || []).join('\n')}`
       );
     }
 
-    const json2 = JSON.stringify(vr2.value, null, 2);
-    const blob2 = new Blob([json2], { type: 'application/json;charset=utf-8' });
-    const filename2 = sanitizeFileName(
-      opt.filename || opt.fileName || suggestAssetFileName(vr1.value, opt)
+    const assetJson = JSON.stringify(assetV2Validation.value, null, 2);
+    const assetBlob = new Blob([assetJson], { type: 'application/json;charset=utf-8' });
+    const assetFilename = sanitizeFileName(
+      exportOptions.filename ||
+      exportOptions.fileName ||
+      suggestAssetFileName(internalValidation.value, exportOptions)
     );
-    downloadBlob(blob2, filename2);
+    downloadBlob(assetBlob, assetFilename);
   }
 
   function parseAssetJsonText(text) {
@@ -159,24 +161,24 @@
         return { ok: false, errors: ['assetSchemaV2 not loaded'] };
       }
 
-      const vr2 = global.assetSchemaV2.coerceAndValidate(obj);
-      if (!vr2.ok) {
-        return { ok: false, errors: vr2.errors || ['Asset v2 invalid'] };
+      const assetV2Validation = global.assetSchemaV2.coerceAndValidate(obj);
+      if (!assetV2Validation.ok) {
+        return { ok: false, errors: assetV2Validation.errors || ['Asset v2 invalid'] };
       }
 
       const internalMap = {
         // Internal state keeps its own version separate from exported JSON assets.
         version: 1,
-        width: vr2.value.width,
-        height: vr2.value.height,
-        tiles: vr2.value.tiles,
+        width: assetV2Validation.value.width,
+        height: assetV2Validation.value.height,
+        tiles: assetV2Validation.value.tiles,
       };
 
       return {
         ok: true,
         value: internalMap,
         detectedVersion: 2,
-        importedPalette: vr2.value.palette || [],
+        importedPalette: assetV2Validation.value.palette || [],
       };
     }
 
@@ -195,19 +197,19 @@
       throw new Error('paletteConfigSchema not loaded');
     }
 
-    const vr = global.paletteConfigSchema.coerceAndValidate(paletteConfig);
-    if (!vr.ok) {
-      throw new Error(`export palette failed:\n${(vr.errors || []).join('\n')}`);
+    const validation = global.paletteConfigSchema.coerceAndValidate(paletteConfig);
+    if (!validation.ok) {
+      throw new Error(`export palette failed:\n${(validation.errors || []).join('\n')}`);
     }
 
-    const opt = options || {};
-    const json = JSON.stringify(vr.value, null, 2);
-    const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+    const exportOptions = options || {};
+    const paletteJson = JSON.stringify(validation.value, null, 2);
+    const paletteBlob = new Blob([paletteJson], { type: 'application/json;charset=utf-8' });
 
     const filename = sanitizeFileName(
-      opt.filename || opt.fileName || suggestPaletteFileName(opt)
+      exportOptions.filename || exportOptions.fileName || suggestPaletteFileName(exportOptions)
     );
-    downloadBlob(blob, filename);
+    downloadBlob(paletteBlob, filename);
   }
 
   function parsePaletteJsonText(text) {

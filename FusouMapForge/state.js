@@ -5,31 +5,31 @@
   'use strict';
 
   // Runtime state mirrors schema integer rules before deciding whether to use fallbacks.
-  function toIntStrict(v) {
-    const n = (typeof v === 'string') ? Number(v.trim()) : Number(v);
-    if (!Number.isFinite(n)) {
+  function toIntStrict(value) {
+    const numberValue = (typeof value === 'string') ? Number(value.trim()) : Number(value);
+    if (!Number.isFinite(numberValue)) {
       return { ok: false, value: 0 };
     }
-    const t = Math.trunc(n);
-    if (t !== n) {
+    const intValue = Math.trunc(numberValue);
+    if (intValue !== numberValue) {
       return { ok: false, value: 0 };
     }
-    if (!Number.isSafeInteger(t)) {
+    if (!Number.isSafeInteger(intValue)) {
       return { ok: false, value: 0 };
     }
-    return { ok: true, value: t };
+    return { ok: true, value: intValue };
   }
 
   // State mutations use this after validation boundaries to keep tile ids non-negative.
-  function clampNonNegInt(v, fallback) {
-    const r = toIntStrict(v);
-    if (!r.ok) {
+  function clampNonNegInt(value, fallback) {
+    const result = toIntStrict(value);
+    if (!result.ok) {
       return fallback | 0;
     }
-    if (r.value < 0) {
+    if (result.value < 0) {
       return fallback | 0;
     }
-    return r.value | 0;
+    return result.value | 0;
   }
 
   // Return a detached palette object so callers cannot mutate internal state by reference.
@@ -79,14 +79,19 @@
 
   // Default runtime data stays aligned with constants when they are available.
   function normalizeDefaultAsset() {
-    const C = global.appConstAsset && global.appConstAsset.DEFAULTS
+    const defaults = global.appConstAsset && global.appConstAsset.DEFAULTS
       ? global.appConstAsset.DEFAULTS
       : null;
-    let w = (C && C.WIDTH) ? (C.WIDTH | 0) : 40;
-    let h = (C && C.HEIGHT) ? (C.HEIGHT | 0) : 25;
-    w = Math.max(1, w | 0);
-    h = Math.max(1, h | 0);
-    return { version: 1, width: w, height: h, tiles: new Array(w * h).fill(0) };
+    let defaultWidth = (defaults && defaults.WIDTH) ? (defaults.WIDTH | 0) : 40;
+    let defaultHeight = (defaults && defaults.HEIGHT) ? (defaults.HEIGHT | 0) : 25;
+    defaultWidth = Math.max(1, defaultWidth | 0);
+    defaultHeight = Math.max(1, defaultHeight | 0);
+    return {
+      version: 1,
+      width: defaultWidth,
+      height: defaultHeight,
+      tiles: new Array(defaultWidth * defaultHeight).fill(0)
+    };
   }
 
   function normalizeDefaultPalette() {
@@ -274,42 +279,42 @@
 
     function loadAsset(nextAsset) {
       // Validate first so rejected imports never partially mutate the live state.
-      const vr = global.internalAssetSchema.coerceAndValidate(nextAsset);
-      if (!vr.ok) {
-        emit({ type: 'loadError', errors: vr.errors || [] });
+      const validation = global.internalAssetSchema.coerceAndValidate(nextAsset);
+      if (!validation.ok) {
+        emit({ type: 'loadError', errors: validation.errors || [] });
         return false;
       }
 
-      const w = vr.value.width | 0;
-      const h = vr.value.height | 0;
+      const nextWidth = validation.value.width | 0;
+      const nextHeight = validation.value.height | 0;
       const limits = getAssetLimits();
 
       // Apply limits to the imported dimensions before swapping any runtime fields.
-      if (w < limits.minW || w > limits.maxW) {
+      if (nextWidth < limits.minW || nextWidth > limits.maxW) {
         emit({
           type: 'loadError',
           errors: [`width out of range: ${limits.minW}-${limits.maxW}`]
         });
         return false;
       }
-      if (h < limits.minH || h > limits.maxH) {
+      if (nextHeight < limits.minH || nextHeight > limits.maxH) {
         emit({
           type: 'loadError',
           errors: [`height out of range: ${limits.minH}-${limits.maxH}`]
         });
         return false;
       }
-      if ((w * h) > limits.maxCells) {
+      if ((nextWidth * nextHeight) > limits.maxCells) {
         emit({ type: 'loadError', errors: ['map too large: cells limit exceeded'] });
         return false;
       }
 
       // Swap the runtime snapshot only after validation and limit checks both pass.
-      asset = vr.value;
-      width = w;
-      height = h;
-      tiles = new Uint32Array(vr.value.tiles.map((x) => {
-        return (clampNonNegInt(x, 0) >>> 0);
+      asset = validation.value;
+      width = nextWidth;
+      height = nextHeight;
+      tiles = new Uint32Array(validation.value.tiles.map((tileId) => {
+        return (clampNonNegInt(tileId, 0) >>> 0);
       }));
 
       emit({ type: 'load' });

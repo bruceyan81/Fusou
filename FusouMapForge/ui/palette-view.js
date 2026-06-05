@@ -54,37 +54,38 @@
     }
 
     function makeConsole16Select(initialIndex) {
-      const s = document.createElement('select');
-      s.className = 'cm-colorSel';
+      const selectEl = document.createElement('select');
+      selectEl.className = 'cm-colorSel';
 
-      const c16 = window.appConstAsset && window.appConstAsset.CONSOLE16;
-      const names = (c16 && c16.NAMES) ? c16.NAMES : [];
+      const console16 = window.appConstAsset && window.appConstAsset.CONSOLE16;
+      const names = (console16 && console16.NAMES) ? console16.NAMES : [];
 
       for (let i = 0; i < 16; i++) {
         const opt = document.createElement('option');
-        const nm = names[i] || `Color${i}`;
+        const colorName = names[i] || `Color${i}`;
         opt.value = String(i);
-        opt.textContent = `${i < 10 ? ` ${i}` : String(i)} ${nm}`;
-        s.appendChild(opt);
+        opt.textContent = `${i < 10 ? ` ${i}` : String(i)} ${colorName}`;
+        selectEl.appendChild(opt);
       }
 
-      s.value = String((initialIndex | 0) & 15);
-      return s;
+      selectEl.value = String((initialIndex | 0) & 15);
+      return selectEl;
     }
 
-    function applySampleStyle(el, fgIdx, bgIdx, text) {
-      const c16 = window.appConstAsset && window.appConstAsset.CONSOLE16;
-      const hex = (c16 && c16.HEX) ? c16.HEX : null;
+    function applySampleStyle(sampleEl, fgIndex, bgIndex, text) {
+      const console16 = window.appConstAsset && window.appConstAsset.CONSOLE16;
+      const hex = (console16 && console16.HEX) ? console16.HEX : null;
 
       if (hex && hex.length >= 16) {
-        el.style.color = hex[(fgIdx | 0) & 15];
-        el.style.backgroundColor = hex[(bgIdx | 0) & 15];
+        sampleEl.style.color = hex[(fgIndex | 0) & 15];
+        sampleEl.style.backgroundColor = hex[(bgIndex | 0) & 15];
       } else {
-        el.style.color = '';
-        el.style.backgroundColor = '';
+        sampleEl.style.color = '';
+        sampleEl.style.backgroundColor = '';
       }
 
-      el.textContent = (text === null || text === undefined || text === '') ? 'Aa' : String(text);
+      sampleEl.textContent =
+        (text === null || text === undefined || text === '') ? 'Aa' : String(text);
     }
 
     function createPaletteRow(entry, deps) {
