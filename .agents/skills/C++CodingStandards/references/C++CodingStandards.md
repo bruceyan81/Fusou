@@ -10,7 +10,7 @@
 
 ### 规则
 
-- 统一使用 **PascalCase** / **UpperCamelCase**
+- 统一使用 **PascalCase**
 - 每个单词首字母大写
 - **不使用下划线**
 
@@ -29,13 +29,17 @@ enum class ValueKind;
 
 ### 适用范围
 
-局部变量 / 函数形参 / 全局变量 / 静态变量（除常量外）。
+局部变量 / 函数形参 / 全局变量 / 静态变量（除 constexpr 常量外）。
 
 ### 规则
 
 - 统一使用 **lowerCamelCase**
-- `bool` 类型使用小写 b 作为前缀
-- 名词或名词短语（表达状态）
+- 全局变量以小写 g 开头
+  - 凡是 namespace 作用域的非 constexpr 变量，一律视为全局变量并使用 g 前缀
+  - 是否为 static、const、bool 均不改变这一点
+  - 因而全局 bool 使用 g 前缀，**不使用 b 前缀**
+- `bool` 类型前缀使用小写 b
+- 名词或名词短语（表达状态）但 **布尔类型** 不受这条规则约束
 - 避免无意义短名：`tmp` / `data` / `value`（除非语境非常明确）
 
 ### 例
@@ -44,7 +48,8 @@ enum class ValueKind;
 float playerSpeed = 6.0f;
 int enemyCount = 0;
 float deltaTime = 0.0f;
-bool bUse = false;
+bool bIsRunning = false;
+char gView = 'p';
 ```
 
 ---
@@ -53,11 +58,10 @@ bool bUse = false;
 
 ### 适用范围
 
-constexpr / const（包括 class 内静态常量）。
+constexpr（包括 class 内成员），const 不适用于本规则。
 
 ### 规则
 
-- 统一使用 **kPascalCase**
 - `k` + `PascalCase`
 
 ### 例
@@ -77,16 +81,20 @@ static constexpr float kDefaultGravity = 9.8f;
 
 ### 规则
 
-- 统一使用 **lowerCamelCase**
+- 除 C++ 规定名称形式的特殊函数外，函数名统一使用 lowerCamelCase
 - 函数名应为 **动词短语**
-- 函数名 **严禁** 使用 **and** 和 **or** 等连词来表达 2 个以上的动作
-- 原则上禁止 **一个函数仅有一行代码** 且没有复用，除非有明确理由
-- 布尔返回值使用：`is` / `has` / `can` / `should` 开头
+- 严格禁止仅有一行实现且调用点少于 2 处的函数
+  - 第三方回调、接口契约、虚函数重写等“必须以函数形式存在”的情况可以豁免
+- 从命名层面严格禁止 and 和 or 作为独立单词出现
+- 布尔返回值区分以下 3 种情况
+  - 查询型函数：如果函数只查询状态，不改变对象状态，原则上应使用 `is` / `has` / `can` / `should` 开头
+  - 命令型函数：如果函数会执行动作，且 `bool` 仅表示动作是否成功，可以使用动作动词开头
+  - 对失败属于正常业务分支、且调用者必须关注结果的命令型函数，建议使用 `try` 开头
 
 ### 例
 
 ```cpp
-void openFile();
+bool tryOpenFile();
 bool isVisible() const;
 bool hasTarget() const;
 void resetTimer();
@@ -102,8 +110,9 @@ namespace。
 
 ### 规则
 
-- 命名空间使用 **全小写**，多词就拆分，禁止使用下划线，即禁止 **snake_case**
+- 命名空间使用 **全小写**，禁止使用下划线，即禁止 **snake_case**
 - 顶层命名空间应 **全局唯一且可识别**
+- 命名空间层级按模块职责划分，不以拆分单词为目的增加层级
 
 ### 例
 
@@ -133,9 +142,9 @@ enum / enum class。
 
 ```cpp
 enum class ValueKind {
-  Argument,
-  BasicBlock,
-  Constant,
+    Argument,
+    BasicBlock,
+    Constant,
 };
 ```
 
@@ -145,22 +154,23 @@ enum class ValueKind {
 
 ### 适用范围
 
-class / struct 的数据成员。
+class / struct 的数据成员，包含静态成员变量。
 
 ### 规则
 
-- 使用 `lowerCamelCase` + `后缀下划线`
+- 使用 `lowerCamelCase` + `后缀下划线
 
 ### 例
 
 ```cpp
 class Player {
 public:
-  void setHp(int hp);
+    void setHp(int hp);
 
 private:
-  int hp_ = 100;
-  float moveSpeed_ = 6.0f;
+    constexpr char kView_ = 'P';
+    int hp_ = 100;
+    float moveSpeed_ = 6.0f;
 };
 ```
 
@@ -195,7 +205,6 @@ private:
 
 - 超过 2 行的注释，必须使用 **Doxygen** 风格
 - **函数** 的注释必须是 **Doxygen** 风格
-- 禁止使用冒号、括号
 - 禁止注释末尾使用句号、分号
 - 禁止分割线注释
 - 禁止行尾注释，但对于以下情况做豁免
@@ -243,6 +252,24 @@ class ConsoleSession final
 }
 ```
 
+## 11. include 规则
+
+### 适用范围
+
+所有 `.cpp` 和 `.h` 文件。
+
+### 规则
+
+- 原则上从上到下先 include 项目头，然后标准库头
+
+### 例
+
+```cpp
+#include "Character.h"
+#include <string>
+#include <cstddef>
+```
+
 ---
 
 # Files & Folders Standards
@@ -251,7 +278,7 @@ class ConsoleSession final
 
 ### 适用范围
 
-`.h` / `.hpp` / `.cpp` / `.text` / `.md` / `.json`
+`.h` / `.hpp` / `.cpp` / `.txt` / `.md` / `.json`
 
 ### 规则
 
@@ -283,7 +310,7 @@ Source/
 
 - 统一使用 **PascalCase**
 - 目录名应明确表达模块职责
-- 不包括 `src` / `include` /  `tests` / `third_party` / `tools` 这几个特例，它们已经高度约定俗成，不得更改
+- 不包括 `src` / `include` / `tests` / `third_party` / `tools` 这几个特例，它们已经高度约定俗成，不得更改
 - 不包括 `.agents` 及其目录下的子目录、文件，这些属于 codex CLI 相关内容与项目无关
 - 不包括 `FusouMapForge` 目录下的子目录
 
