@@ -58,7 +58,7 @@ char gView = 'p';
 
 ### 适用范围
 
-constexpr（包括 class 内成员），const 不适用于本规则。
+constexpr（包括 class 内静态成员），const 不适用于本规则。
 
 ### 规则
 
@@ -158,7 +158,7 @@ class / struct 的数据成员，包含静态成员变量。
 
 ### 规则
 
-- 使用 `lowerCamelCase` + `后缀下划线
+- 使用 `lowerCamelCase` + `后缀下划线`
 
 ### 例
 
@@ -168,7 +168,7 @@ public:
     void setHp(int hp);
 
 private:
-    constexpr char kView_ = 'P';
+    static constexpr char kView_ = 'P';
     int hp_ = 100;
     float moveSpeed_ = 6.0f;
 };
