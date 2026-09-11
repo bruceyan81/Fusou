@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <windows.h>
+
 namespace platform
 {
     namespace console
@@ -34,7 +36,29 @@ namespace platform
             ~ConsoleSession() noexcept;
 
         private:
-            bool bIsStarted_ = false;
+            struct ConsoleSnapshot final
+            {
+                HANDLE                     inputHandle_{nullptr};
+                HANDLE                     outputHandle_{nullptr};
+                DWORD                      inputMode_{0};
+                DWORD                      outputMode_{0};
+                CONSOLE_CURSOR_INFO        cursorInfo_{};
+                CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo_{};
+                CONSOLE_FONT_INFOEX        fontInfo_{};
+                HWND                       windowHandle_{nullptr};
+                LONG_PTR                   windowStyle_{0};
+                RECT                       windowRect_{};
+            };
+
+            void saveConsoleSnapshot();
+            void configureConsoleInputMode();
+            void configureConsoleFont();
+            void configureConsoleWindowStyle();
+            void centerConsoleWindow();
+            void configureConsoleScreen();
+            void restoreConsoleSnapshot() noexcept;
+
+            ConsoleSnapshot snapshot_{};
         };
     } // namespace console
 } // namespace platform
