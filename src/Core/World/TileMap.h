@@ -9,6 +9,7 @@
 #include "src/Core/Types/Types.h"
 #include "src/Core/World/TileIdsGenerated.h"
 
+#include <cstddef>
 #include <vector>
 
 namespace core
@@ -20,7 +21,17 @@ namespace core
         public:
             TileMap() = default;
 
+            TileMap(const TileMap&) = default;
+
+            TileMap& operator=(const TileMap& other);
+
+            TileMap(TileMap&& other) noexcept;
+
+            TileMap& operator=(TileMap&& other) noexcept;
+
             TileMap(int width, int height, TileId fill = 0);
+
+            TileMap(int width, int height, std::vector<TileId> tiles);
 
             [[nodiscard]] bool isCellInBounds(types::Vec2 cell) const noexcept;
 
@@ -38,9 +49,9 @@ namespace core
 
             void setTileIdAtCell(types::Vec2 cell, TileId tileId) noexcept;
 
-            void setTiles(std::vector<TileId> tiles);
-
         private:
+            [[nodiscard]] static std::size_t calculateTileCount(int width, int height);
+
             int width_ = 0;
             int height_ = 0;
 

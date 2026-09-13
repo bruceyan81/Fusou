@@ -114,8 +114,6 @@ namespace app
                 throw std::runtime_error("Tiles size mismatch.");
             }
 
-            core::world::TileMap map{width, height, static_cast<core::world::TileId>(0)};
-
             std::vector<core::world::TileId> tiles;
             tiles.reserve(tileCount);
 
@@ -140,7 +138,7 @@ namespace app
                 tiles.push_back(checkTileId(rawId));
             }
 
-            map.setTiles(std::move(tiles));
+            core::world::TileMap map{width, height, std::move(tiles)};
 
             // palette のイテレータを取得する
             core::game::TileColorPalette colorPalette{};

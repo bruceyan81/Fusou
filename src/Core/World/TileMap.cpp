@@ -8,29 +8,91 @@
 
 #include <limits>
 #include <stdexcept>
+#include <utility>
 
 namespace core
 {
     namespace world
     {
-        TileMap::TileMap(int width, int height, TileId fill) : width_(width), height_(height)
+        std::size_t TileMap::calculateTileCount(int width, int height)
         {
-            if (width_ <= 0 || height_ <= 0)
+            if (width <= 0 || height <= 0)
             {
                 throw std::runtime_error("The size of TileMap must be positive.");
             }
 
             constexpr auto kMaxSize = std::numeric_limits<std::size_t>::max();
 
-            const auto     w = static_cast<std::size_t>(width_);
-            const auto     h = static_cast<std::size_t>(height_);
+            const auto widthSize = static_cast<std::size_t>(width);
+            const auto heightSize = static_cast<std::size_t>(height);
 
-            if (w > (kMaxSize / h))
+            if (widthSize > (kMaxSize / heightSize))
             {
                 throw std::runtime_error("Tile count overflow.");
             }
 
-            tiles_.assign(w * h, fill);
+            return widthSize * heightSize;
+        }
+
+        TileMap::TileMap(TileMap&& other) noexcept
+            : width_(other.width_), height_(other.height_), tiles_(std::move(other.tiles_))
+        {
+            other.width_ = 0;
+            other.height_ = 0;
+            other.tiles_.clear();
+        }
+
+        TileMap& TileMap::operator=(const TileMap& other)
+        {
+            if (this == &other)
+            {
+                return *this;
+            }
+
+            TileMap copiedMap{other};
+            *this = std::move(copiedMap);
+            return *this;
+        }
+
+        TileMap& TileMap::operator=(TileMap&& other) noexcept
+        {
+            if (this == &other)
+            {
+                return *this;
+            }
+
+            width_ = other.width_;
+            height_ = other.height_;
+            tiles_ = std::move(other.tiles_);
+
+            other.width_ = 0;
+            other.height_ = 0;
+            other.tiles_.clear();
+
+            return *this;
+        }
+
+        TileMap::TileMap(int width, int height, TileId fill)
+        {
+            const std::size_t tileCount = calculateTileCount(width, height);
+
+            width_ = width;
+            height_ = height;
+            tiles_.assign(tileCount, fill);
+        }
+
+        TileMap::TileMap(int width, int height, std::vector<TileId> tiles)
+        {
+            const std::size_t tileCount = calculateTileCount(width, height);
+
+            if (tiles.size() != tileCount)
+            {
+                throw std::runtime_error("Tiles size mismatch.");
+            }
+
+            width_ = width;
+            height_ = height;
+            tiles_ = std::move(tiles);
         }
 
         bool TileMap::isCellInBounds(types::Vec2 cell) const noexcept
@@ -60,24 +122,5 @@ namespace core
             tiles_[index] = tileId;
         }
 
-        void TileMap::setTiles(std::vector<TileId> tiles)
-        {
-            constexpr auto kMaxSize = std::numeric_limits<std::size_t>::max();
-
-            if (width_ <= 0 || height_ <= 0)
-            {
-                throw std::runtime_error("The size of TileMap must be positive.");
-            }
-
-            const auto width  = static_cast<std::size_t>(width_);
-            const auto height = static_cast<std::size_t>(height_);
-
-            if (width > (kMaxSize / height))
-            {
-                throw std::runtime_error("Tile count overflow.");
-            }
-
-            tiles_ = std::move(tiles);
-        }
     } // namespace world
 } // namespace core
