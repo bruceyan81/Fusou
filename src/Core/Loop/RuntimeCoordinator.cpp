@@ -16,22 +16,19 @@ namespace core
 {
     namespace loop
     {
-        void RuntimeCoordinator::prepareSceneUpdate(
-            game::GameScene scene, ports::StepDirection& ioPendingStepDir) noexcept
+        void RuntimeCoordinator::prepareSceneUpdate(game::GameScene scene) noexcept
         {
             if (scene == game::GameScene::Game)
             {
                 return;
             }
 
-            ioPendingStepDir = ports::StepDirection::None;
             clearGoalCheckpointTracking();
         }
 
         bool RuntimeCoordinator::updateScene(game::GameState& ioGameState, FrameClock& frameClock,
             const ports::InputResult& inputResult, core::types::Duration currFrameDeltaTime, int& ioFixedStepCount,
-            int& diedRestorePressCount, ports::StepDirection& ioPendingStepDir,
-            bool& bIoRestoredFromDied) const
+            int& diedRestorePressCount, bool& bIoRestoredFromDied) const
         {
             if (ioGameState.scene_.current_ == game::GameScene::Intro)
             {
@@ -41,8 +38,7 @@ namespace core
 
             if (ioGameState.scene_.current_ == game::GameScene::Died)
             {
-                updateDiedScene(
-                    ioGameState, inputResult, diedRestorePressCount, ioPendingStepDir, bIoRestoredFromDied);
+                updateDiedScene(ioGameState, inputResult, diedRestorePressCount, bIoRestoredFromDied);
                 return false;
             }
 
@@ -277,8 +273,7 @@ namespace core
         }
 
         void RuntimeCoordinator::updateDiedScene(game::GameState& ioGameState, const ports::InputResult& inputResult,
-            int& diedRestorePressCount, ports::StepDirection& ioPendingStepDir,
-            bool& bIoRestoredFromDied) const noexcept
+            int& diedRestorePressCount, bool& bIoRestoredFromDied) const noexcept
         {
             game::updateSceneByInput(ioGameState, inputResult);
 
@@ -295,7 +290,7 @@ namespace core
 
             diedRestorePressCount = 0;
 
-            if (!restoreFromDiedSnapshot(ioGameState, ioPendingStepDir))
+            if (!restoreFromDiedSnapshot(ioGameState))
             {
                 return;
             }
@@ -401,8 +396,7 @@ namespace core
             ioGameState.scene_.current_ = game::GameScene::Intro;
         }
 
-        bool RuntimeCoordinator::restoreFromDiedSnapshot(
-            game::GameState& ioGameState, ports::StepDirection& ioPendingStepDir) const noexcept
+        bool RuntimeCoordinator::restoreFromDiedSnapshot(game::GameState& ioGameState) const noexcept
         {
             if (!state_.bHasDiedRestoreSnapshot_)
             {
@@ -412,7 +406,7 @@ namespace core
             ioGameState = state_.diedRestoreSnapshot_;
             ioGameState.scene_.current_ = game::GameScene::Game;
 
-            applyDiedRestore(ioGameState, ioPendingStepDir);
+            applyDiedRestore(ioGameState);
             return true;
         }
 
@@ -430,8 +424,7 @@ namespace core
             return true;
         }
 
-        void RuntimeCoordinator::applyDiedRestore(
-            game::GameState& ioGameState, ports::StepDirection& ioPendingStepDir) const noexcept
+        void RuntimeCoordinator::applyDiedRestore(game::GameState& ioGameState) const noexcept
         {
             ioGameState.player_.currLives_ = ioGameState.player_.maxLives_;
 
@@ -454,7 +447,6 @@ namespace core
             ioGameState.player_.movementState_ = game::PlayerMovementState::Normal;
             ioGameState.player_.bGrounded_ = false;
 
-            ioPendingStepDir = ports::StepDirection::None;
         }
 
         void RuntimeCoordinator::applyGoalCheckpointRestore(bool bGoalWaveActive) noexcept

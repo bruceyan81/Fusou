@@ -46,10 +46,6 @@ namespace core
             // 入力サンプル結果
             ports::InputResult inputResult_{};
 
-            // TODO pendingStepDir_ の命名も一 cell 移動入力に合わせる
-            // 瞬間的な一 cell 移動入力を次の Tick まで保持する
-            ports::StepDirection pendingStepDir_{ports::StepDirection::None};
-
             // シーンより、入力サンプリングの文脈
             ports::InputContext inputContext_{};
 

@@ -21,15 +21,6 @@ namespace core
             Died,
         };
 
-        enum class StepDirection
-        {
-            None,
-            Left,
-            Right,
-            Up,
-            Down,
-        };
-
         /**
          * @brief 1 フレームに入力した結果
          */
@@ -61,15 +52,6 @@ namespace core
 
             core::types::Vec2f playerMoveAxis_{};
             core::types::Vec2f lightMoveAxis_{};
-
-            // TODO StepDirection を瞬間的な一 cell 移動入力だと分かる名前へ変える
-            // W A S D を押す瞬間に発生する一 cell 移動入力
-            bool bStepLeftPressed_{false};
-            bool bStepRightPressed_{false};
-            bool bStepUpPressed_{false};
-            bool bStepDownPressed_{false};
-
-            StepDirection stepPrimaryDir_{StepDirection::None};
         };
 
         /**

@@ -12,60 +12,6 @@ namespace core
 {
     namespace loop
     {
-        namespace
-        {
-            [[nodiscard]] bool hasInstantMoveInput(const core::ports::InputResult& input) noexcept
-            {
-                return (input.stepPrimaryDir_ != core::ports::StepDirection::None);
-            }
-
-            [[nodiscard]] core::ports::InputResult clearInstantMoveInput(core::ports::InputResult input) noexcept
-            {
-                input.bStepLeftPressed_ = false;
-                input.bStepRightPressed_ = false;
-                input.bStepUpPressed_ = false;
-                input.bStepDownPressed_ = false;
-
-                input.stepPrimaryDir_ = core::ports::StepDirection::None;
-
-                return input;
-            }
-
-            void injectInstantMoveInputIfEmpty(
-                core::ports::InputResult& inputResult, const core::ports::StepDirection stepDir) noexcept
-            {
-                if (stepDir == core::ports::StepDirection::None)
-                {
-                    return;
-                }
-
-                if (inputResult.stepPrimaryDir_ != core::ports::StepDirection::None)
-                {
-                    return;
-                }
-
-                inputResult.stepPrimaryDir_ = stepDir;
-
-                switch (stepDir)
-                {
-                case core::ports::StepDirection::Left:
-                    inputResult.bStepLeftPressed_ = true;
-                    break;
-                case core::ports::StepDirection::Right:
-                    inputResult.bStepRightPressed_ = true;
-                    break;
-                case core::ports::StepDirection::Up:
-                    inputResult.bStepUpPressed_ = true;
-                    break;
-                case core::ports::StepDirection::Down:
-                    inputResult.bStepDownPressed_ = true;
-                    break;
-                default:
-                    break;
-                }
-            }
-        } // namespace
-
         GameLoop::GameLoop(core::game::GameState initial, core::game::GameState initialSnapshot)
             : gameState_(std::move(initial)), initialSnapshot_(std::move(initialSnapshot))
         {
@@ -130,10 +76,10 @@ namespace core
             game::GameState preUpdateSnapshot{};
             bool            bHasPreUpdateSnapshot = false;
 
-            runtimeCoordinator_.prepareSceneUpdate(gameState_.scene_.current_, pendingStepDir_);
+            runtimeCoordinator_.prepareSceneUpdate(gameState_.scene_.current_);
 
             const bool bShouldUpdateGameScene = runtimeCoordinator_.updateScene(gameState_, frameClock, inputResult_,
-                currFrameDeltaTime, fixedStepCount_, diedRestorePressCount_, pendingStepDir_, bRestoredFromDied);
+                currFrameDeltaTime, fixedStepCount_, diedRestorePressCount_, bRestoredFromDied);
 
             // Game scene だけ固定 Tick のゲームシミュレーションを行う
             if (bShouldUpdateGameScene)
@@ -197,8 +143,6 @@ namespace core
         void GameLoop::restoreInitialState()
         {
             runtimeCoordinator_.restoreFromInitialSnapshot(gameState_, initialSnapshot_);
-
-            pendingStepDir_ = core::ports::StepDirection::None;
         }
 
         void GameLoop::restoreFromGoalCheckpoint()
@@ -207,8 +151,6 @@ namespace core
             {
                 return;
             }
-
-            pendingStepDir_ = core::ports::StepDirection::None;
 
             gameICount_ = 0;
             diedRestorePressCount_ = 0;
@@ -222,44 +164,14 @@ namespace core
             preUpdateSnapshot = gameState_;
             bHasPreUpdateSnapshot = true;
 
-            /**
-             * @note 入力をサンプルしたが、1フレームに 0 Tick の場合がある
-             * こういう場合、この入力を一時保存して、次の tick に実行する
-             */
-            if (hasInstantMoveInput(inputResult_))
-            {
-                if (pendingStepDir_ == ports::StepDirection::None)
-                {
-                    pendingStepDir_ = inputResult_.stepPrimaryDir_;
-                }
-
-                // 同フレーム内の複数 tick で step が再消費されないように、ここで剥がす
-                inputResult_ = clearInstantMoveInput(inputResult_);
-            }
-
             const auto fixedDeltaTime = frameClock.getFixedStep();
 
             fixedStepCount_ = frameClock.consumeFixedSteps();
 
-            auto tickInputBase = inputResult_;
-
-            const bool bShouldInjectPendingStep =
-                (fixedStepCount_ > 0) && (pendingStepDir_ != ports::StepDirection::None)
-                && !hasInstantMoveInput(tickInputBase);
-
-            if (bShouldInjectPendingStep)
-            {
-                injectInstantMoveInputIfEmpty(tickInputBase, pendingStepDir_);
-
-                pendingStepDir_ = ports::StepDirection::None;
-            }
-
             for (int i = 0; i < fixedStepCount_; ++i)
             {
-                const auto tickInput = (i == 0) ? tickInputBase : clearInstantMoveInput(tickInputBase);
-
-                game::tickGameStateByFixedStep(gameState_, fixedDeltaTime, tickInput);
-                game::updateSceneByInput(gameState_, tickInput);
+                game::tickGameStateByFixedStep(gameState_, fixedDeltaTime, inputResult_);
+                game::updateSceneByInput(gameState_, inputResult_);
 
                 if (gameState_.scene_.current_ != game::GameScene::Game)
                 {

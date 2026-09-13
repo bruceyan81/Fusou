@@ -169,22 +169,19 @@ namespace core
             void tickPlayerSim(GameState& gameState, const float dt, const ports::InputResult& inputResult) noexcept
             {
                 const types::Vec2 playerFeetCellBeforeStep = getPlayerFeetCell(gameState.player_.feetWorldPos_);
-                PlayerMovement    simMovement = createPlayerMovementByInputResult(inputResult);
-                PlayerMovement    stateMovement = simMovement;
+                const PlayerMovement movement = createPlayerMovementByInputResult(inputResult);
 
-                // Ladder step は simMovement を消費して、後続の速度積分に反映される
-                const LadderMoveResult ladderMoveResult =
-                    runLadderMoveMode(gameState, simMovement, inputResult, playerFeetCellBeforeStep);
+                runLadderMoveMode(gameState, movement, playerFeetCellBeforeStep);
 
                 gameState.player_.bGrounded_ = false;
 
                 if (gameState.player_.movementState_ == PlayerMovementState::Normal)
                 {
-                    integratePlayerVelocityNormal(gameState.player_, simMovement, dt);
+                    integratePlayerVelocityNormal(gameState.player_, movement, dt);
                 }
                 else
                 {
-                    integratePlayerVelocityOnLadder(gameState.player_, simMovement);
+                    integratePlayerVelocityOnLadder(gameState.player_, movement);
                 }
 
                 const int   rawSteps = calculateSubstepCountByVelocity(gameState.player_.velocity_, dt);
@@ -197,13 +194,7 @@ namespace core
                         gameState.assets_.player_.tileMap_, gameState.light_, gameState.mainCamera_);
                 }
 
-                if (ladderMoveResult.bConsumedY_ && stateMovement.climbIntentY_ == 0)
-                {
-                    stateMovement.climbIntentY_ = (ladderMoveResult.stepDir_ == ports::StepDirection::Up) ? -1 : 1;
-                }
-
-                // stateMovement は Ladder 状態を収束させるため、消費前の入力意図を残す
-                runLadderStateFinalize(gameState, stateMovement);
+                runLadderStateFinalize(gameState, movement);
             }
 
             /**

@@ -12,27 +12,6 @@ namespace platform
     {
         namespace
         {
-            [[nodiscard]] core::ports::StepDirection toCoreStepDir(const StepDirection dir) noexcept
-            {
-                switch (dir)
-                {
-                    case StepDirection::Left:
-                        return core::ports::StepDirection::Left;
-
-                    case StepDirection::Right:
-                        return core::ports::StepDirection::Right;
-
-                    case StepDirection::Up:
-                        return core::ports::StepDirection::Up;
-
-                    case StepDirection::Down:
-                        return core::ports::StepDirection::Down;
-
-                    default:
-                        return core::ports::StepDirection::None;
-                }
-            }
-
             struct AllowedAction final
             {
                 bool bQuit{false};
@@ -99,58 +78,7 @@ namespace platform
 
             core::ports::InputResult inputResult{};
 
-            // 前回の状態を保存する
             {
-                stepPrimaryDir_ = StepDirection::None;
-
-                if (allowedAction.bPlayerAxis)
-                {
-                    const bool bCurrWPressed = keyboardState_.isKeyPressed(kWCode);
-                    const bool bCurrAPressed = keyboardState_.isKeyPressed(kACode);
-                    const bool bCurrSPressed = keyboardState_.isKeyPressed(kSCode);
-                    const bool bCurrDPressed = keyboardState_.isKeyPressed(kDCode);
-
-                    bStepUpPressed_ = bCurrWPressed && !bPrevWPressed_;
-                    bStepLeftPressed_ = bCurrAPressed && !bPrevAPressed_;
-                    bStepDownPressed_ = bCurrSPressed && !bPrevSPressed_;
-                    bStepRightPressed_ = bCurrDPressed && !bPrevDPressed_;
-
-                    if (bStepLeftPressed_)
-                    {
-                        stepPrimaryDir_ = StepDirection::Left;
-                    }
-                    else if (bStepRightPressed_)
-                    {
-                        stepPrimaryDir_ = StepDirection::Right;
-                    }
-                    else if (bStepUpPressed_)
-                    {
-                        stepPrimaryDir_ = StepDirection::Up;
-                    }
-                    else if (bStepDownPressed_)
-                    {
-                        stepPrimaryDir_ = StepDirection::Down;
-                    }
-
-                    bPrevWPressed_ = bCurrWPressed;
-                    bPrevAPressed_ = bCurrAPressed;
-                    bPrevSPressed_ = bCurrSPressed;
-                    bPrevDPressed_ = bCurrDPressed;
-                }
-                else
-                {
-                    bStepUpPressed_ = false;
-                    bStepLeftPressed_ = false;
-                    bStepDownPressed_ = false;
-                    bStepRightPressed_ = false;
-
-                    // 非 Game 中は prev をクリアしておく（Game 入りで edge を正しく拾う）
-                    bPrevWPressed_ = false;
-                    bPrevAPressed_ = false;
-                    bPrevSPressed_ = false;
-                    bPrevDPressed_ = false;
-                }
-
                 if (allowedAction.bAnyKey)
                 {
                     inputResult.bAnyKeyPressed_ = sampleAnyKeyPressed(keyboardState_);
@@ -254,13 +182,6 @@ namespace platform
                     bPrevIPressed_ = bCurrIPressed;
                     bPrevPPressed_ = bCurrPPressed;
                 }
-
-                inputResult.bStepLeftPressed_ = bStepLeftPressed_;
-                inputResult.bStepRightPressed_ = bStepRightPressed_;
-                inputResult.bStepUpPressed_ = bStepUpPressed_;
-                inputResult.bStepDownPressed_ = bStepDownPressed_;
-
-                inputResult.stepPrimaryDir_ = toCoreStepDir(stepPrimaryDir_);
 
                 return inputResult;
             }

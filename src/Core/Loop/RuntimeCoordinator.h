@@ -43,8 +43,8 @@ namespace core
         class RuntimeCoordinator final
         {
         public:
-            // Game scene 以外へ出た時に Game 専用の保留状態を消す
-            void prepareSceneUpdate(game::GameScene scene, ports::StepDirection& ioPendingStepDir) noexcept;
+            // Game scene 以外へ出た時に goal checkpoint 追跡状態を消す
+            void prepareSceneUpdate(game::GameScene scene) noexcept;
 
             /**
              * @brief 現在の scene を更新して Game 固定 Tick が必要か返す
@@ -56,7 +56,6 @@ namespace core
                 core::types::Duration currFrameDeltaTime,
                 int& fixedStepCount,
                 int& diedRestorePressCount,
-                ports::StepDirection& pendingStepDir,
                 bool& bRestoredFromDied
             ) const;
 
@@ -91,8 +90,7 @@ namespace core
             /**
              * @brief Died scene 用 snapshot から Game scene へ戻す
              */
-            bool restoreFromDiedSnapshot(
-                game::GameState& gameState, ports::StepDirection& pendingStepDir) const noexcept;
+            bool restoreFromDiedSnapshot(game::GameState& gameState) const noexcept;
 
             /**
              * @brief Goal checkpoint snapshot から Game scene へ戻す
@@ -126,8 +124,7 @@ namespace core
             void updateDiedScene(
                 game::GameState& gameState, 
                 const ports::InputResult& inputResult,
-                int& diedRestorePressCount, 
-                ports::StepDirection& pendingStepDir,
+                int& diedRestorePressCount,
                 bool& bRestoredFromDied
             ) const noexcept;
 
@@ -149,7 +146,7 @@ namespace core
 
             void finalizeGoalCheckpoint(const game::GameState& gameState) noexcept;
 
-            void applyDiedRestore(game::GameState& ioGameState, ports::StepDirection& ioPendingStepDir) const noexcept;
+            void applyDiedRestore(game::GameState& ioGameState) const noexcept;
 
             void applyGoalCheckpointRestore(bool bGoalWaveActive) noexcept;
 

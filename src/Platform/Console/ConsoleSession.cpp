@@ -22,6 +22,7 @@ namespace platform
             constexpr SHORT kConsoleHeight = 25;
             constexpr SHORT kConsoleFontWidth = 18;
             constexpr SHORT kConsoleFontHeight = 36;
+            constexpr SHORT kMinimumConsoleFontWidth = 4;
 
             [[nodiscard]] HANDLE getConsoleHandle(DWORD stdHandle)
             {
@@ -100,16 +101,28 @@ namespace platform
         {
             CONSOLE_FONT_INFOEX fontInfo = snapshot_.fontInfo_;
 
-            fontInfo.dwFontSize.X = kConsoleFontWidth;
-            fontInfo.dwFontSize.Y = kConsoleFontHeight;
             fontInfo.FontFamily = FF_DONTCARE;
             fontInfo.FontWeight = FW_NORMAL;
             (void)wcscpy_s(fontInfo.FaceName, L"Consolas");
 
-            if (SetCurrentConsoleFontEx(snapshot_.outputHandle_, FALSE, &fontInfo) == FALSE)
+            for (SHORT fontWidth = kConsoleFontWidth; fontWidth >= kMinimumConsoleFontWidth; --fontWidth)
             {
-                throw std::runtime_error("SetCurrentConsoleFontEx failed.");
+                fontInfo.dwFontSize.X = fontWidth;
+                fontInfo.dwFontSize.Y = static_cast<SHORT>(fontWidth * kConsoleFontHeight / kConsoleFontWidth);
+
+                if (SetCurrentConsoleFontEx(snapshot_.outputHandle_, FALSE, &fontInfo) == FALSE)
+                {
+                    continue;
+                }
+
+                const COORD largestWindowSize = GetLargestConsoleWindowSize(snapshot_.outputHandle_);
+                if (largestWindowSize.X >= kConsoleWidth && largestWindowSize.Y >= kConsoleHeight)
+                {
+                    return;
+                }
             }
+
+            throw std::runtime_error("Unable to configure a console font that fits the game window.");
         }
 
         void ConsoleSession::configureConsoleWindowStyle()
@@ -185,13 +198,13 @@ namespace platform
                 throw std::runtime_error("SetConsoleWindowInfo minimal window failed.");
             }
 
+            configureConsoleFont();
+
             const COORD bufferSize{kConsoleWidth, kConsoleHeight};
             if (SetConsoleScreenBufferSize(outputHandle, bufferSize) == FALSE)
             {
                 throw std::runtime_error("SetConsoleScreenBufferSize failed.");
             }
-
-            configureConsoleFont();
 
             const SMALL_RECT windowRect{0, 0, kConsoleWidth - 1, kConsoleHeight - 1};
             if (SetConsoleWindowInfo(outputHandle, TRUE, &windowRect) == FALSE)
