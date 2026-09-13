@@ -98,8 +98,6 @@ namespace core
             bool restoreFromGoalCheckpoint(game::GameState& ioGameState) noexcept;
 
         private:
-            // TODO RuntimeCoordinator を scene 更新と復元管理へ分割する
-
             /**
              * @brief Intro scene の点滅 UI と入力遷移を更新する
              */

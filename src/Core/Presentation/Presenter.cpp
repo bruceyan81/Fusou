@@ -247,8 +247,6 @@ namespace core
                 core::render::CellBuffer& outFrame
             ) noexcept
             {
-                // TODO Presenter.cpp を scene 別、layer 別の描画単位へ分割する
-
                 // 描画対象の参照を準備
                 const auto& gameTileMap = gameState.assets_.gameScene_.tileMap_;
                 const auto& backgroundTileMap = gameState.assets_.gameSceneBackground_.tileMap_;

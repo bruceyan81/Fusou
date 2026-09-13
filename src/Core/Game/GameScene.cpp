@@ -61,7 +61,6 @@ namespace core
                     }
                     break;
 
-                // TODO 現時点は入力だけでは遷移せず専用 update 側で処理する、やり方は検討中
                 case GameScene::Cutscene:
                 case GameScene::FinalCutscene:
                 case GameScene::Game:

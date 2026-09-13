@@ -70,7 +70,6 @@ namespace core
             // Died から Game へ戻った時に初期状態復元を避ける
             bool bRestoredFromDied = false;
 
-            // TODO EffectRuntimeState を外してより直接的な表現時間へ移す
             gameState_.effect_.bgTime_ += currFrameDeltaTime;
 
             game::GameState preUpdateSnapshot{};
